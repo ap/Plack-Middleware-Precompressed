@@ -12,38 +12,38 @@ sub call {
 	my $self = shift;
 	my ( $env ) = @_;
 
+	my $encoding;
 	my $req_path_info = $env->{'PATH_INFO'};
+	my $have_match = $self->match ? $req_path_info =~ $self->match : 1;
 
-	if ( not $self->match or $req_path_info =~ $self->match ) {
-		my ( $encoding ) =
+	if ( $have_match ) {
+		( $encoding ) =
 			grep { $_ eq 'gzip' or $_ eq 'x-gzip' }
-			map  { s!\s+!!g; split /,/ }
+			map  { s!\s+!!g; split /,/, lc }
 			grep { defined }
-			lc $env->{'HTTP_ACCEPT_ENCODING'};
+			$env->{'HTTP_ACCEPT_ENCODING'};
+	}
 
-		local $env->{'PATH_INFO'} = $req_path_info . '.gz'
-			if $encoding;
+	local $env->{'PATH_INFO'} = $req_path_info . '.gz'
+		if $encoding;
 
-		my $res = $self->app->( $env );
+	my $res = $self->app->( $env );
+	return $res unless $have_match;
 
-		return $res if 'ARRAY' ne ref $res or $res->[0] != 200;
-
+	Plack::Util::response_cb( $res, sub {
+		my $res = shift;
+		return if $res->[0] != 200;
 		Plack::Util::header_push( $res->[1], 'Vary', 'Accept-Encoding' );
-
 		if ( $encoding ) {
 			my $mime = Plack::MIME->mime_type( $req_path_info );
 			Plack::Util::header_set( $res->[1], 'Content-Type', $mime ) if $mime;
 			Plack::Util::header_push( $res->[1], 'Content-Encoding', $encoding );
 		}
-
-		return $res;
-	}
-
-	$self->app->( $env );
+		return;
+	} );
 }
 
 1;
-
 
 __END__
 
