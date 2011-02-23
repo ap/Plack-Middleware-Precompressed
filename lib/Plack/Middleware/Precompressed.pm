@@ -13,8 +13,8 @@ sub call {
 	my ( $env ) = @_;
 
 	my $encoding;
-	my $req_path_info = $env->{'PATH_INFO'};
-	my $have_match = $self->match ? $req_path_info =~ $self->match : 1;
+	my $path = $env->{'PATH_INFO'};
+	my $have_match = $self->match ? $path =~ $self->match : 1;
 
 	if ( $have_match ) {
 		( $encoding ) =
@@ -24,23 +24,28 @@ sub call {
 			$env->{'HTTP_ACCEPT_ENCODING'};
 	}
 
-	local $env->{'PATH_INFO'} = $req_path_info . '.gz'
-		if $encoding;
+	my $res = do {
+		local $env->{'PATH_INFO'} = "$path.gz" if $encoding;
+		$self->app->( $env );
+	};
 
-	my $res = $self->app->( $env );
 	return $res unless $have_match;
 
-	Plack::Util::response_cb( $res, sub {
+	my $is_fail;
+	my $res = Plack::Util::response_cb( $res, sub {
 		my $res = shift;
-		return if $res->[0] != 200;
+		$is_fail = $res->[0] != 200;
+		return if $is_fail;
 		Plack::Util::header_push( $res->[1], 'Vary', 'Accept-Encoding' );
 		if ( $encoding ) {
-			my $mime = Plack::MIME->mime_type( $req_path_info );
+			my $mime = Plack::MIME->mime_type( $path );
 			Plack::Util::header_set( $res->[1], 'Content-Type', $mime ) if $mime;
 			Plack::Util::header_push( $res->[1], 'Content-Encoding', $encoding );
 		}
 		return;
 	} );
+
+	return $is_fail ? $self->app->( $env ) : $res;
 }
 
 1;
