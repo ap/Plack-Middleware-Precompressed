@@ -32,7 +32,7 @@ sub call {
 	return $res unless $have_match;
 
 	my $is_fail;
-	my $res = Plack::Util::response_cb( $res, sub {
+	my $final_res = Plack::Util::response_cb( $res, sub {
 		my $res = shift;
 		$is_fail = $res->[0] != 200;
 		return if $is_fail;
@@ -45,7 +45,7 @@ sub call {
 		return;
 	} );
 
-	return $is_fail ? $self->app->( $env ) : $res;
+	return $is_fail ? $self->app->( $env ) : $final_res;
 }
 
 1;
