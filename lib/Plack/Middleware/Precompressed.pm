@@ -54,12 +54,12 @@ __END__
 
 =head1 SYNOPSIS
 
-  use Plack::Builder;
+ use Plack::Builder;
 
-  builder {
-      enable 'Plack::Middleware::Precompressed', match => qr!\.js\z!;
-      $handler;
-  };
+ builder {
+     enable 'Precompressed', match => qr!\.js\z!;
+     $handler;
+ };
 
 =head1 DESCRIPTION
 
