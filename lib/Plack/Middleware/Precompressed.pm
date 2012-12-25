@@ -40,6 +40,7 @@ sub call {
 			Array::RefElem::hv_store %pass_env, $_, $env->{ $_ } for @$keys;
 			$self->rewrite( \%pass_env ) for $env->{'PATH_INFO'};
 		}
+		delete local $env->{'HTTP_ACCEPT_ENCODING'} if $encoding;
 		$self->app->( $env );
 	};
 
