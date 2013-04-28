@@ -24,6 +24,8 @@ sub call {
 	my $path = $env->{'PATH_INFO'};
 	my $have_match = $self->match ? $path =~ $self->match : 1;
 
+	# the `deflate` encoding is unreliably messy so we won't support it
+	# c.f. http://zoompf.com/2012/02/lose-the-wait-http-compression
 	if ( $have_match ) {
 		( $encoding ) =
 			grep { $_ eq 'gzip' or $_ eq 'x-gzip' }
