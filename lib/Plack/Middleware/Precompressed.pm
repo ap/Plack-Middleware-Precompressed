@@ -1,8 +1,10 @@
-package Plack::Middleware::Precompressed;
 use strict;
-use parent 'Plack::Middleware';
+
+package Plack::Middleware::Precompressed;
 
 # ABSTRACT: serve pre-gzipped content to compression-enabled clients
+
+use parent 'Plack::Middleware';
 
 use Plack::Util::Accessor qw( match rules env_keys );
 use Plack::MIME ();
