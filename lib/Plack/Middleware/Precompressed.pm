@@ -73,6 +73,8 @@ sub call {
 
 __END__
 
+=pod
+
 =head1 SYNOPSIS
 
  use Plack::Builder;
