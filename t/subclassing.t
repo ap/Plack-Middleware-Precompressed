@@ -23,8 +23,7 @@ test_psgi
 	};
 
 BEGIN {
-package # hide from PAUSE
-	Plack::Middleware::PrecompressedSubclass;
+package Plack::Middleware::PrecompressedSubclass;
 
 require Plack::Middleware::Precompressed;
 our @ISA = 'Plack::Middleware::Precompressed';

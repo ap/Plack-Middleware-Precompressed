@@ -2,7 +2,7 @@ use 5.006; use strict; use warnings;
 
 package Plack::Middleware::Precompressed;
 
-# ABSTRACT: serve pre-gzipped content to compression-enabled clients
+our $VERSION = '1.103';
 
 BEGIN { require Plack::Middleware; our @ISA = 'Plack::Middleware' }
 
@@ -70,6 +70,14 @@ sub call {
 1;
 
 __END__
+
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Plack::Middleware::Precompressed - serve pre-gzipped content to compression-enabled clients
 
 =head1 SYNOPSIS
 
