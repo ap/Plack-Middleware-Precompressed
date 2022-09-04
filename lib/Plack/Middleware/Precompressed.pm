@@ -57,11 +57,11 @@ sub call {
 		my $res = shift;
 		$is_fail = $res->[0] != 200;
 		return if $is_fail;
-		Plack::Util::header_push( $res->[1], 'Vary', 'Accept-Encoding' );
+		push @{ $res->[1] }, 'Vary', 'Accept-Encoding';
 		if ( $encoding ) {
 			my $mime = Plack::MIME->mime_type( $path );
 			Plack::Util::header_set( $res->[1], 'Content-Type', $mime ) if $mime;
-			Plack::Util::header_push( $res->[1], 'Content-Encoding', $encoding );
+			push @{ $res->[1] }, 'Content-Encoding', $encoding;
 		}
 		return;
 	} );
