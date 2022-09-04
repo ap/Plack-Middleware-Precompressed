@@ -2,7 +2,7 @@ use 5.006; use strict; use warnings;
 
 package Plack::Middleware::Precompressed;
 
-our $VERSION = '1.103';
+our $VERSION = '1.104';
 
 BEGIN { require Plack::Middleware; our @ISA = 'Plack::Middleware' }
 
