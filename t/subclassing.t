@@ -26,7 +26,9 @@ test_psgi
 BEGIN {
 package # hide from PAUSE
 	Plack::Middleware::PrecompressedSubclass;
-use parent 'Plack::Middleware::Precompressed';
+
+require Plack::Middleware::Precompressed;
+our @ISA = 'Plack::Middleware::Precompressed';
 
 sub env_keys { \@key }
 

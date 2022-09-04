@@ -6,7 +6,7 @@ package Plack::Middleware::Precompressed;
 
 # ABSTRACT: serve pre-gzipped content to compression-enabled clients
 
-use parent 'Plack::Middleware';
+BEGIN { require Plack::Middleware; our @ISA = 'Plack::Middleware' }
 
 use Plack::Util::Accessor qw( match rules env_keys );
 use Plack::MIME ();
