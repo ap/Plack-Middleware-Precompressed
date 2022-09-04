@@ -1,9 +1,9 @@
 use strict;
 use warnings;
 
+use Test::More tests => 2;
 use Plack::Test;
 use Plack::Builder;
-use Test::More;
 use HTTP::Request::Common;
 
 my @key = qw( HTTP_HOST REMOTE_ADDR );
@@ -22,8 +22,6 @@ test_psgi
 		is $res->content(), "$zhost/z/foo", 'Subclassing can do everything configuration can';
 		is $got, $expected, '... and works exactly the same';
 	};
-
-done_testing;
 
 BEGIN {
 package # hide from PAUSE
